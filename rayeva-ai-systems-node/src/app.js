@@ -27,7 +27,10 @@ app.use(cors());
 app.use(express.json());
 
 // ── Static Frontend ─────────────────────────────────────────────────
-app.use(express.static(path.join(__dirname, "..", "public")));
+const clientDist = path.join(__dirname, "..", "client", "dist");
+const publicDir = path.join(__dirname, "..", "public");
+const fs = require("fs");
+app.use(express.static(fs.existsSync(clientDist) ? clientDist : publicDir));
 
 // ── Register Routes ─────────────────────────────────────────────────
 app.use("/api/v1/categories", categoryRouter);
@@ -89,6 +92,14 @@ app.get("/api/info", (_req, res) => {
 
 app.get("/health", (_req, res) => {
   res.json({ status: "healthy", environment: config.APP_ENV, mode: isDemo ? "demo" : "live" });
+});
+
+// ── SPA Fallback (serve React index.html for any non-API route) ──
+app.get("*", (_req, res) => {
+  const indexPath = fs.existsSync(clientDist)
+    ? path.join(clientDist, "index.html")
+    : path.join(publicDir, "index.html");
+  res.sendFile(indexPath);
 });
 
 // ── Global Error Handler (must be AFTER routes) ─────────────────────
