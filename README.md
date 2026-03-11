@@ -4,14 +4,14 @@
 > **Focus:** Production-ready AI modules integrated with real business logic for sustainable commerce
 
 [![Live Demo](https://img.shields.io/badge/🌐_Live_Demo-Render-blue?style=for-the-badge)](https://rayeva-ai-system-el64.onrender.com/)
-[![Video Walkthrough](https://img.shields.io/badge/🎥_Video_Walkthrough-Watch-red?style=for-the-badge)](https://YOUR-VIDEO-LINK)
-[![GitHub Repo](https://img.shields.io/badge/💻_GitHub-Repository-black?style=for-the-badge)](https://github.com/YOUR-USERNAME/YOUR-REPO-NAME)
+[![Video Walkthrough](https://img.shields.io/badge/🎥_Video_Walkthrough-Watch-red?style=for-the-badge)](https://youtu.be/hZbzRMqgkF8)
+[![GitHub Repo](https://img.shields.io/badge/💻_GitHub-Repository-black?style=for-the-badge)](https://github.com/vikashkr1712/Rayeva-World-Pvt-Ltd)
 
 | Resource | Link |
 |----------|------|
 | **🌐 Live Demo** | [https://rayeva-ai-system-el64.onrender.com](https://rayeva-ai-system-el64.onrender.com/) |
-| **🎥 Video Walkthrough** | [Watch Video](https://YOUR-VIDEO-LINK) |
-| **💻 GitHub Repository** | [https://github.com/YOUR-USERNAME/YOUR-REPO-NAME](https://github.com/YOUR-USERNAME/YOUR-REPO-NAME) |
+| **🎥 Video Walkthrough** | [Watch Video](https://youtu.be/hZbzRMqgkF8) |
+| **💻 GitHub Repository** | [https://github.com/vikashkr1712/Rayeva-World-Pvt-Ltd](https://github.com/vikashkr1712/Rayeva-World-Pvt-Ltd) |
 
 ---
 
