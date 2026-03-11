@@ -3,6 +3,16 @@
 > **Role:** Full Stack / AI Intern Assignment  
 > **Focus:** Production-ready AI modules integrated with real business logic for sustainable commerce
 
+[![Live Demo](https://img.shields.io/badge/🌐_Live_Demo-Render-blue?style=for-the-badge)](https://rayeva-ai-system-el64.onrender.com/)
+[![Video Walkthrough](https://img.shields.io/badge/🎥_Video_Walkthrough-Watch-red?style=for-the-badge)](https://YOUR-VIDEO-LINK)
+[![GitHub Repo](https://img.shields.io/badge/💻_GitHub-Repository-black?style=for-the-badge)](https://github.com/YOUR-USERNAME/YOUR-REPO-NAME)
+
+| Resource | Link |
+|----------|------|
+| **🌐 Live Demo** | [https://rayeva-ai-system-el64.onrender.com](https://rayeva-ai-system-el64.onrender.com/) |
+| **🎥 Video Walkthrough** | [Watch Video](https://YOUR-VIDEO-LINK) |
+| **💻 GitHub Repository** | [https://github.com/YOUR-USERNAME/YOUR-REPO-NAME](https://github.com/YOUR-USERNAME/YOUR-REPO-NAME) |
+
 ---
 
 ## Quick Start (Demo)
@@ -18,7 +28,9 @@ node seed_data.js
 npm start
 ```
 
-Open **http://localhost:3000** in your browser to see the interactive dashboard.
+Open **https://rayeva-ai-system-el64.onrender.com/** in your browser to see the live demo.
+
+> For local development, open **http://localhost:3000** after running the server.
 
 > **No OpenAI API key needed!** The system runs in **Demo Mode** with intelligent mock AI responses that mimic real GPT-4o outputs. To use real AI, add your key to `.env`.
 
@@ -26,7 +38,7 @@ Open **http://localhost:3000** in your browser to see the interactive dashboard.
 
 ## Demo Walkthrough (What to Show in Presentation)
 
-### 1. Overview Dashboard (http://localhost:3000)
+### 1. Overview Dashboard (https://rayeva-ai-system-el64.onrender.com/)
 - Shows live KPIs: product count, proposal count, AI log count, server health
 - Architecture diagram showing all 4 modules
 - Tech stack table
@@ -228,8 +240,9 @@ npm run dev
 ```
 
 ### Access Points
-- **API Root:** http://localhost:3000/
-- **Health Check:** http://localhost:3000/health
+- **Live Demo:** https://rayeva-ai-system-el64.onrender.com/
+- **API Root (local):** http://localhost:3000/
+- **Health Check:** https://rayeva-ai-system-el64.onrender.com/health
 - **Use Postman or cURL for API testing**
 
 ---
@@ -538,7 +551,7 @@ Every AI output goes through:
 **Categorize a product:**
 
 ```bash
-curl -X POST http://localhost:8000/api/v1/categories/categorize \
+curl -X POST https://rayeva-ai-system-el64.onrender.com/api/v1/categories/categorize \
   -H "Content-Type: application/json" \
   -d '{
     "name": "Bamboo Toothbrush",
@@ -550,7 +563,7 @@ curl -X POST http://localhost:8000/api/v1/categories/categorize \
 **Generate a B2B proposal:**
 
 ```bash
-curl -X POST http://localhost:8000/api/v1/proposals/generate \
+curl -X POST https://rayeva-ai-system-el64.onrender.com/api/v1/proposals/generate \
   -H "Content-Type: application/json" \
   -d '{
     "client_name": "GreenCorp Hotels",
@@ -564,7 +577,7 @@ curl -X POST http://localhost:8000/api/v1/proposals/generate \
 **View AI logs:**
 
 ```bash
-curl http://localhost:8000/api/v1/logs/?module=category_tagger
+curl https://rayeva-ai-system-el64.onrender.com/api/v1/logs/?module=category_tagger
 ```
 
 ---
