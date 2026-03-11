@@ -447,6 +447,8 @@
       <button class="active" data-tab="overview">Overview</button>
       <button data-tab="categorizer">Category Tagger</button>
       <button data-tab="proposal">B2B Proposals</button>
+      <button data-tab="impact">Impact Reports</button>
+      <button data-tab="chat">WhatsApp Bot</button>
       <button data-tab="logs">Logs</button>
       <button data-tab="api">API</button>
     </div>
@@ -469,6 +471,14 @@
           <div class="stat-label">Interactions</div>
         </div>
         <div class="stat-card">
+          <div class="stat-value" id="kpi-impact">-</div>
+          <div class="stat-label">Impact Reports</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-value" id="kpi-chats">-</div>
+          <div class="stat-label">Chats</div>
+        </div>
+        <div class="stat-card">
           <div class="stat-value" id="kpi-health">-</div>
           <div class="stat-label">Server</div>
         </div>
@@ -476,7 +486,7 @@
 
       <div class="card">
         <div class="card-title">Modules</div>
-        <div class="card-subtitle">Four modules power the Rayeva platform. Two are fully built, two are designed and ready for implementation.</div>
+        <div class="card-subtitle">Four AI-powered modules drive the Rayeva platform — all fully implemented.</div>
         <div class="modules-grid">
           <div class="module-item">
             <div class="num">Module 01</div>
@@ -494,13 +504,13 @@
             <div class="num">Module 03</div>
             <h4>Impact Reporting</h4>
             <p>Estimates plastic saved, carbon avoided, and local sourcing impact per order or buyer.</p>
-            <span class="module-status planned">Designed</span>
+            <span class="module-status done">Implemented</span>
           </div>
           <div class="module-item">
             <div class="num">Module 04</div>
             <h4>WhatsApp Support</h4>
             <p>Handles order status, return queries, and escalation with full conversation logging.</p>
-            <span class="module-status planned">Designed</span>
+            <span class="module-status done">Implemented</span>
           </div>
         </div>
       </div>
@@ -631,6 +641,75 @@
       </div>
     </div>
 
+    <div class="panel" id="panel-impact">
+      <div class="card">
+        <div class="card-title">Generate Impact Report</div>
+        <div class="card-subtitle">Enter order details to estimate environmental impact — plastic saved, carbon avoided, and local sourcing benefits.</div>
+        <form id="impactForm">
+          <div class="form-row">
+            <div class="field">
+              <label>Order ID</label>
+              <input type="text" id="imp-order" placeholder="ORD-12345" required />
+            </div>
+            <div class="field">
+              <label>Order Total (₹)</label>
+              <input type="number" id="imp-total" placeholder="2500" required />
+            </div>
+            <div class="field wide">
+              <label>Products (JSON array)</label>
+              <textarea id="imp-products" rows="4" placeholder='[{"name":"Bamboo Toothbrush","quantity":2,"price":249,"category":"Personal Care"}]' required></textarea>
+            </div>
+          </div>
+          <div class="btn-row">
+            <button type="submit" class="btn btn-dark" id="impBtn">Generate Report</button>
+            <button type="button" class="btn btn-outline" onclick="fillSampleImpact()">Try a sample</button>
+          </div>
+        </form>
+        <div id="impResult" style="display:none;"></div>
+      </div>
+
+      <div class="card">
+        <div class="card-title">Impact Reports</div>
+        <div class="card-subtitle" style="display:flex;align-items:center;justify-content:space-between;">
+          <span>All generated environmental impact reports.</span>
+          <button class="btn btn-outline btn-sm" onclick="loadImpactReports()">Refresh</button>
+        </div>
+        <div id="impactTable"><span class="empty">Loading...</span></div>
+      </div>
+    </div>
+
+    <div class="panel" id="panel-chat">
+      <div class="card">
+        <div class="card-title">WhatsApp Support Bot</div>
+        <div class="card-subtitle">Simulate a customer conversation. The AI detects intent and responds — or escalates to a human agent when needed.</div>
+        <div id="chatBox" style="background:#f5f5f5;border-radius:10px;padding:1rem;min-height:300px;max-height:450px;overflow-y:auto;margin-bottom:1rem;border:1px solid #e5e5e5;">
+          <div id="chatMessages">
+            <div style="text-align:center;color:#aaa;font-size:.82rem;padding:2rem 0;">Start a conversation below. Try asking about orders, returns, or products.</div>
+          </div>
+        </div>
+        <form id="chatForm" style="display:flex;gap:.5rem;">
+          <input type="text" id="chat-msg" placeholder="Type a message... e.g. Where is my order ORD-12345?" style="flex:1;padding:.55rem .7rem;border:1px solid #ddd;border-radius:6px;font-size:.88rem;font-family:inherit;" required />
+          <button type="submit" class="btn btn-dark" id="chatBtn">Send</button>
+        </form>
+        <div style="margin-top:.5rem;display:flex;gap:.4rem;flex-wrap:wrap;">
+          <button class="btn btn-outline btn-sm" onclick="sendQuickChat('Where is my order ORD-12345?')">Track Order</button>
+          <button class="btn btn-outline btn-sm" onclick="sendQuickChat('How do I return a product?')">Returns</button>
+          <button class="btn btn-outline btn-sm" onclick="sendQuickChat('I received a damaged item')">Complaint</button>
+          <button class="btn btn-outline btn-sm" onclick="sendQuickChat('Recommend some sustainable products')">Recommendations</button>
+          <button class="btn btn-outline btn-sm" onclick="sendQuickChat('Hi, what can you help me with?')">General</button>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-title">Conversations</div>
+        <div class="card-subtitle" style="display:flex;align-items:center;justify-content:space-between;">
+          <span>All bot conversations with intent detection and escalation status.</span>
+          <button class="btn btn-outline btn-sm" onclick="loadConversations()">Refresh</button>
+        </div>
+        <div id="conversationsTable"><span class="empty">Loading...</span></div>
+      </div>
+    </div>
+
     <div class="panel" id="panel-logs">
       <div class="card">
         <div class="card-title">Activity Log</div>
@@ -687,6 +766,30 @@
               <td>View logs</td>
               <td><button class="btn btn-outline btn-sm" onclick="tryApi('GET','/api/v1/logs/')">Run</button></td>
             </tr>
+            <tr>
+              <td><span class="chip chip-method post">POST</span></td>
+              <td><code>/api/v1/impact/generate</code></td>
+              <td>Generate impact report</td>
+              <td><button class="btn btn-outline btn-sm" onclick="switchTab('impact')">Go</button></td>
+            </tr>
+            <tr>
+              <td><span class="chip chip-method get">GET</span></td>
+              <td><code>/api/v1/impact/</code></td>
+              <td>List impact reports</td>
+              <td><button class="btn btn-outline btn-sm" onclick="tryApi('GET','/api/v1/impact/')">Run</button></td>
+            </tr>
+            <tr>
+              <td><span class="chip chip-method post">POST</span></td>
+              <td><code>/api/v1/chat/message</code></td>
+              <td>Send chat message</td>
+              <td><button class="btn btn-outline btn-sm" onclick="switchTab('chat')">Go</button></td>
+            </tr>
+            <tr>
+              <td><span class="chip chip-method get">GET</span></td>
+              <td><code>/api/v1/chat/conversations</code></td>
+              <td>List conversations</td>
+              <td><button class="btn btn-outline btn-sm" onclick="tryApi('GET','/api/v1/chat/conversations')">Run</button></td>
+            </tr>
           </tbody>
         </table>
       </div>
@@ -737,16 +840,20 @@
 
     async function loadKPIs() {
       try {
-        const [health, products, proposals, logs] = await Promise.all([
+        const [health, products, proposals, logs, impacts, chats] = await Promise.all([
           api('GET', '/health'),
           api('GET', '/api/v1/categories/products'),
           api('GET', '/api/v1/proposals/'),
-          api('GET', '/api/v1/logs/')
+          api('GET', '/api/v1/logs/'),
+          api('GET', '/api/v1/impact/'),
+          api('GET', '/api/v1/chat/conversations')
         ]);
         document.getElementById('kpi-health').textContent = health.status === 'healthy' ? 'Online' : 'Offline';
         document.getElementById('kpi-products').textContent = Array.isArray(products) ? products.length : '0';
         document.getElementById('kpi-proposals').textContent = Array.isArray(proposals) ? proposals.length : '0';
         document.getElementById('kpi-logs').textContent = Array.isArray(logs) ? logs.length : '0';
+        document.getElementById('kpi-impact').textContent = Array.isArray(impacts) ? impacts.length : '0';
+        document.getElementById('kpi-chats').textContent = Array.isArray(chats) ? chats.length : '0';
       } catch (e) {
         document.getElementById('kpi-health').textContent = 'Offline';
         document.getElementById('statusDot').classList.remove('on');
@@ -1012,7 +1119,195 @@
     loadProducts();
     loadProposals();
     loadLogs();
+    loadImpactReports();
+    loadConversations();
     checkMode();
+
+    // ── Module 3: Impact Report ────────────────────────────────────
+
+    var impactSamples = [
+      { order_id: 'ORD-2026-001', total: 1847, products: [
+        { name: 'Bamboo Toothbrush Set (Pack of 4)', quantity: 2, price: 249, category: 'Personal Care & Hygiene' },
+        { name: 'Organic Coconut Coir Kitchen Scrubber', quantity: 3, price: 129, category: 'Cleaning & Laundry' },
+        { name: 'Beeswax Food Wraps Set', quantity: 1, price: 399, category: 'Kitchen & Dining' },
+        { name: 'Reusable Cotton Mesh Bags (Set of 6)', quantity: 1, price: 329, category: 'Fashion & Accessories' },
+        { name: 'Neem Wood Comb', quantity: 2, price: 149, category: 'Personal Care & Hygiene' }
+      ]},
+      { order_id: 'ORD-2026-002', total: 2576, products: [
+        { name: 'Stainless Steel Water Bottle 750ml', quantity: 3, price: 699, category: 'Travel & Outdoor' },
+        { name: 'Jute Grocery Tote Bag', quantity: 4, price: 199, category: 'Fashion & Accessories' },
+        { name: 'Natural Loofah Sponge Pack', quantity: 2, price: 179, category: 'Cleaning & Laundry' }
+      ]},
+      { order_id: 'ORD-2026-003', total: 3456, products: [
+        { name: 'Organic Cotton Bed Sheet Set', quantity: 1, price: 1899, category: 'Home & Living' },
+        { name: 'Coconut Shell Candle Holder', quantity: 2, price: 349, category: 'Home & Living' },
+        { name: 'Recycled Paper Notebook A5', quantity: 3, price: 189, category: 'Office & Stationery' },
+        { name: 'Bamboo Pen Set', quantity: 2, price: 129, category: 'Office & Stationery' }
+      ]}
+    ];
+
+    function fillSampleImpact() {
+      var s = impactSamples[Math.floor(Math.random() * impactSamples.length)];
+      document.getElementById('imp-order').value = s.order_id;
+      document.getElementById('imp-total').value = s.total;
+      document.getElementById('imp-products').value = JSON.stringify(s.products, null, 2);
+    }
+
+    document.getElementById('impactForm').addEventListener('submit', async function(e) {
+      e.preventDefault();
+      setLoading('impBtn', true);
+      var resultBox = document.getElementById('impResult');
+      resultBox.style.display = 'none';
+      try {
+        var products;
+        try { products = JSON.parse(document.getElementById('imp-products').value); }
+        catch(pe) { throw new Error('Invalid JSON in products field. Use the "Try a sample" button for correct format.'); }
+        var body = {
+          order_id: document.getElementById('imp-order').value,
+          order_total: parseFloat(document.getElementById('imp-total').value),
+          products: products
+        };
+        var data = await api('POST', '/api/v1/impact/generate', body);
+        resultBox.style.display = 'block';
+        if (data.error) {
+          resultBox.className = 'result-box error';
+          resultBox.innerHTML = '<h3>Something went wrong</h3><p style="font-size:.88rem;color:#666;">' + esc(data.error) + '</p>';
+        } else {
+          var imp = data.impact || {};
+          resultBox.className = 'result-box';
+          resultBox.innerHTML =
+            '<h3>Impact Report Generated</h3>' +
+            '<div class="summary-row">' +
+              '<div class="summary-item"><div class="val">' + imp.plastic_saved_kg + ' kg</div><div class="lbl">Plastic Saved</div></div>' +
+              '<div class="summary-item"><div class="val">' + imp.carbon_avoided_kg + ' kg</div><div class="lbl">CO₂ Avoided</div></div>' +
+              '<div class="summary-item"><div class="val">' + data.order_id + '</div><div class="lbl">Order ID</div></div>' +
+            '</div>' +
+            '<div class="section-heading">Customer Impact Statement</div>' +
+            '<div class="impact-block">' + esc(imp.human_readable_statement) + '</div>' +
+            '<div class="section-heading">Local Sourcing</div>' +
+            '<div class="impact-block">' + esc(imp.local_sourcing_summary) + '</div>' +
+            '<div class="section-heading">Methodology</div>' +
+            '<p style="font-size:.82rem;color:#888;">' + esc(imp.methodology_notes) + '</p>' +
+            '<details><summary>Raw JSON</summary><div class="code-block" style="margin-top:.35rem;">' + esc(JSON.stringify(data, null, 2)) + '</div></details>';
+          loadImpactReports();
+          loadKPIs();
+        }
+      } catch (err) {
+        resultBox.style.display = 'block';
+        resultBox.className = 'result-box error';
+        resultBox.innerHTML = '<h3>Something went wrong</h3><p style="font-size:.88rem;color:#666;">' + esc(err.message) + '</p>';
+      }
+      setLoading('impBtn', false);
+    });
+
+    async function loadImpactReports() {
+      var box = document.getElementById('impactTable');
+      box.innerHTML = '<span class="empty">Loading...</span>';
+      try {
+        var data = await api('GET', '/api/v1/impact/');
+        if (!data.length) { box.innerHTML = '<span class="empty">No impact reports yet. Generate one above.</span>'; return; }
+        var html = '<table><thead><tr><th>#</th><th>Order</th><th>Plastic Saved</th><th>CO₂ Avoided</th><th>Statement</th><th>Date</th></tr></thead><tbody>';
+        data.forEach(function(r, i) {
+          html += '<tr>' +
+            '<td>' + (i + 1) + '</td>' +
+            '<td><strong>' + esc(r.order_id) + '</strong></td>' +
+            '<td><span class="chip chip-green">' + r.plastic_saved_kg + ' kg</span></td>' +
+            '<td><span class="chip chip-blue">' + r.carbon_avoided_kg + ' kg</span></td>' +
+            '<td style="max-width:300px;">' + esc((r.human_readable_statement || '').slice(0, 100)) + '...</td>' +
+            '<td>' + new Date(r.created_at || Date.now()).toLocaleDateString() + '</td>' +
+            '</tr>';
+        });
+        html += '</tbody></table>';
+        box.innerHTML = html;
+      } catch (e) { box.innerHTML = '<span class="empty" style="color:#dc2626;">Error: ' + e.message + '</span>'; }
+    }
+
+    // ── Module 4: WhatsApp Bot ─────────────────────────────────────
+
+    var chatSessionId = 'session-' + Math.random().toString(36).substr(2, 9);
+
+    function addChatBubble(text, isUser, meta) {
+      var box = document.getElementById('chatMessages');
+      // Clear placeholder
+      if (box.children.length === 1 && box.children[0].style.textAlign === 'center') {
+        box.innerHTML = '';
+      }
+      var wrapper = document.createElement('div');
+      wrapper.style.cssText = 'display:flex;margin-bottom:.75rem;' + (isUser ? 'justify-content:flex-end;' : 'justify-content:flex-start;');
+      var bubble = document.createElement('div');
+      bubble.style.cssText = 'max-width:75%;padding:.6rem .85rem;border-radius:12px;font-size:.88rem;line-height:1.5;white-space:pre-wrap;' +
+        (isUser
+          ? 'background:#111;color:#fff;border-bottom-right-radius:4px;'
+          : 'background:#fff;color:#111;border:1px solid #e5e5e5;border-bottom-left-radius:4px;');
+      bubble.textContent = text;
+      wrapper.appendChild(bubble);
+      box.appendChild(wrapper);
+      if (meta) {
+        var metaDiv = document.createElement('div');
+        metaDiv.style.cssText = 'font-size:.7rem;color:#aaa;margin-bottom:.5rem;' + (isUser ? 'text-align:right;' : 'text-align:left;');
+        metaDiv.innerHTML = meta;
+        box.appendChild(metaDiv);
+      }
+      document.getElementById('chatBox').scrollTop = document.getElementById('chatBox').scrollHeight;
+    }
+
+    function sendQuickChat(msg) {
+      document.getElementById('chat-msg').value = msg;
+      document.getElementById('chatForm').dispatchEvent(new Event('submit'));
+    }
+
+    document.getElementById('chatForm').addEventListener('submit', async function(e) {
+      e.preventDefault();
+      var msg = document.getElementById('chat-msg').value.trim();
+      if (!msg) return;
+      document.getElementById('chat-msg').value = '';
+      addChatBubble(msg, true);
+      setLoading('chatBtn', true);
+      try {
+        var data = await api('POST', '/api/v1/chat/message', {
+          message: msg,
+          session_id: chatSessionId
+        });
+        if (data.error) {
+          addChatBubble('Sorry, something went wrong: ' + data.error, false);
+        } else {
+          var intentChip = '<span class="chip chip-blue">' + esc(data.intent) + '</span>';
+          var escalateChip = data.escalate ? ' <span class="chip" style="background:#fef2f2;color:#dc2626;">Escalated</span>' : '';
+          addChatBubble(data.bot_response, false, intentChip + escalateChip);
+          loadConversations();
+          loadKPIs();
+        }
+      } catch (err) {
+        addChatBubble('Error: ' + err.message, false);
+      }
+      setLoading('chatBtn', false);
+    });
+
+    async function loadConversations() {
+      var box = document.getElementById('conversationsTable');
+      box.innerHTML = '<span class="empty">Loading...</span>';
+      try {
+        var data = await api('GET', '/api/v1/chat/conversations');
+        if (!data.length) { box.innerHTML = '<span class="empty">No conversations yet. Try the chat above.</span>'; return; }
+        var html = '<table><thead><tr><th>#</th><th>Session</th><th>Customer</th><th>Bot</th><th>Intent</th><th>Escalated</th><th>Time</th></tr></thead><tbody>';
+        data.forEach(function(c, i) {
+          var esc_status = c.escalated
+            ? '<span class="chip" style="background:#fef2f2;color:#dc2626;">Yes</span>'
+            : '<span class="chip chip-green">No</span>';
+          html += '<tr>' +
+            '<td>' + (i + 1) + '</td>' +
+            '<td style="font-size:.78rem;color:#888;">' + esc(c.session_id.slice(0, 12)) + '</td>' +
+            '<td style="max-width:200px;">' + esc((c.user_message || '').slice(0, 60)) + '</td>' +
+            '<td style="max-width:200px;">' + esc((c.bot_response || '').slice(0, 60)) + '</td>' +
+            '<td><span class="chip chip-blue">' + esc(c.intent_detected) + '</span></td>' +
+            '<td>' + esc_status + '</td>' +
+            '<td>' + new Date(c.created_at || Date.now()).toLocaleString() + '</td>' +
+            '</tr>';
+        });
+        html += '</tbody></table>';
+        box.innerHTML = html;
+      } catch (e) { box.innerHTML = '<span class="empty" style="color:#dc2626;">Error: ' + e.message + '</span>'; }
+    }
   </script>
 </body>
 </html>

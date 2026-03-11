@@ -14,6 +14,8 @@ const logger = require("./ai/logger");
 const categoryRouter = require("./routes/category");
 const proposalRouter = require("./routes/proposal");
 const logsRouter = require("./routes/logs");
+const impactRouter = require("./routes/impact");
+const chatRouter = require("./routes/chat");
 
 // Ensure all models are loaded
 require("./models");
@@ -31,6 +33,8 @@ app.use(express.static(path.join(__dirname, "..", "public")));
 app.use("/api/v1/categories", categoryRouter);
 app.use("/api/v1/proposals", proposalRouter);
 app.use("/api/v1/logs", logsRouter);
+app.use("/api/v1/impact", impactRouter);
+app.use("/api/v1/chat", chatRouter);
 
 // ── Health & Info ───────────────────────────────────────────────────
 const isDemo = !config.OPENAI_API_KEY || config.OPENAI_API_KEY === "your-openai-api-key-here";
@@ -63,15 +67,21 @@ app.get("/api/info", (_req, res) => {
       },
       module_3: {
         name: "AI Impact Reporting Generator",
-        status: "architecture_outlined",
-        description:
-          "Estimates plastic saved, carbon avoided, local sourcing impact",
+        status: "fully_implemented",
+        endpoints: [
+          "POST /api/v1/impact/generate",
+          "GET  /api/v1/impact/",
+          "GET  /api/v1/impact/{id}",
+        ],
       },
       module_4: {
         name: "AI WhatsApp Support Bot",
-        status: "architecture_outlined",
-        description:
-          "Order status, return policy, escalation, conversation logging",
+        status: "fully_implemented",
+        endpoints: [
+          "POST /api/v1/chat/message",
+          "GET  /api/v1/chat/conversations",
+          "GET  /api/v1/chat/sessions/{sessionId}",
+        ],
       },
     },
   });

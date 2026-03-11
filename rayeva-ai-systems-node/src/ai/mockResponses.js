@@ -21,6 +21,10 @@ function getMockResponse(systemPrompt, userPrompt) {
     parsed = buildMockCategorization(userPrompt);
   } else if (systemPrompt.includes("B2B")) {
     parsed = buildMockProposal(userPrompt);
+  } else if (systemPrompt.includes("environmental impact")) {
+    parsed = buildMockImpactReport(userPrompt);
+  } else if (systemPrompt.includes("WhatsApp")) {
+    parsed = buildMockChatResponse(userPrompt);
   } else {
     parsed = { message: "Mock response" };
   }
@@ -184,6 +188,92 @@ function buildMockProposal(userPrompt) {
       "Support local artisan communities and fair-trade practices",
       `Cost-effective transition within ₹${budget.toLocaleString("en-IN")} budget with ${Math.round(((budget - totalEstimated) / budget) * 100)}% savings`,
     ],
+  };
+}
+
+/**
+ * Build a mock impact report response.
+ */
+function buildMockImpactReport(userPrompt) {
+  const orderMatch = userPrompt.match(/ORDER ID:\s*(\S+)/);
+  const orderId = orderMatch ? orderMatch[1] : "ORD-001";
+
+  const itemsMatch = userPrompt.match(/ITEMS:\s*(\d+)/);
+  const items = itemsMatch ? parseInt(itemsMatch[1]) : 5;
+
+  const totalMatch = userPrompt.match(/ORDER TOTAL:\s*₹?([\d,]+)/);
+  const total = totalMatch ? parseFloat(totalMatch[1].replace(/,/g, "")) : 5000;
+
+  const plasticSaved = parseFloat((items * 0.12 + total * 0.0003).toFixed(2));
+  const carbonAvoided = parseFloat((items * 0.45 + total * 0.0008).toFixed(2));
+
+  return {
+    plastic_saved_kg: plasticSaved,
+    carbon_avoided_kg: carbonAvoided,
+    local_sourcing_summary: `${Math.min(items, 4)} of ${items} products in this order are locally sourced from artisan communities in India, reducing transportation emissions by an estimated ${(carbonAvoided * 0.3).toFixed(1)} kg CO₂.`,
+    human_readable_statement: `Thank you for choosing sustainable! Your order ${orderId} helped save ${plasticSaved} kg of plastic from entering our oceans, avoided ${carbonAvoided} kg of CO₂ emissions, and supported local artisan communities. Together, we're building a greener future — one order at a time. 🌿`,
+    methodology_notes: `Estimates based on: plastic packaging displacement (0.05-0.2 kg per eco-product), carbon savings from local sourcing vs imported equivalents (~0.5 kg CO₂/kg), and bamboo/organic product lifecycle analysis. Values are conservative lower-bound estimates.`,
+  };
+}
+
+/**
+ * Build a mock WhatsApp chat response.
+ */
+function buildMockChatResponse(userPrompt) {
+  const msgLower = (userPrompt || "").toLowerCase();
+
+  // Detect intent from message
+  if (msgLower.includes("order") && (msgLower.includes("status") || msgLower.includes("track") || msgLower.includes("where"))) {
+    const orderMatch = msgLower.match(/ord-?\d+/i);
+    const orderId = orderMatch ? orderMatch[0].toUpperCase() : null;
+    return {
+      response_message: orderId
+        ? `Hi! 🌿 I checked on your order ${orderId}. It's currently being packed with eco-friendly packaging and is expected to ship within 24 hours. You'll receive a tracking link via SMS once dispatched. Is there anything else I can help with?`
+        : `Hi! 🌿 I'd love to help you track your order. Could you please share your order ID? It usually looks like ORD-12345. You can find it in your order confirmation email.`,
+      intent: "order_status",
+      escalate: false,
+      escalation_reason: null,
+      order_id_referenced: orderId,
+    };
+  }
+
+  if (msgLower.includes("return") || msgLower.includes("exchange")) {
+    return {
+      response_message: "Of course! 🌿 Rayeva has a hassle-free 15-day return policy — no questions asked. Simply go to 'My Orders' in the app, select the item, and choose 'Return'. Our delivery partner will pick it up from your doorstep. Refund is processed within 5-7 business days. Want me to help initiate a return for a specific order?",
+      intent: "return_policy",
+      escalate: false,
+      escalation_reason: null,
+      order_id_referenced: null,
+    };
+  }
+
+  if (msgLower.includes("refund") || msgLower.includes("complaint") || msgLower.includes("damaged") || msgLower.includes("wrong") || msgLower.includes("broken")) {
+    return {
+      response_message: "I'm sorry to hear about this issue. 😔 I've flagged this for our support team, and a human agent will reach out to you within 2 hours to resolve this personally. Your satisfaction matters deeply to us. In the meantime, could you share a photo of the issue? It helps us speed up the resolution.",
+      intent: "escalate",
+      escalate: true,
+      escalation_reason: "Customer reported product issue — requires human review for refund/replacement decision.",
+      order_id_referenced: null,
+    };
+  }
+
+  if (msgLower.includes("product") || msgLower.includes("recommend") || msgLower.includes("suggest") || msgLower.includes("what") || msgLower.includes("best")) {
+    return {
+      response_message: "Great question! 🌿 Here are some of our bestsellers this month:\n\n1. 🪥 Bamboo Toothbrush Set (₹249) — 100% biodegradable\n2. 🧽 Coconut Coir Kitchen Scrubbers (₹129) — compostable\n3. 🫙 Beeswax Food Wraps (₹399) — replaces plastic cling film\n4. 🧴 Organic Cotton Mesh Bags (₹329) — perfect for grocery shopping\n\nWould you like to know more about any of these?",
+      intent: "general_query",
+      escalate: false,
+      escalation_reason: null,
+      order_id_referenced: null,
+    };
+  }
+
+  // Default general response
+  return {
+    response_message: "Hi there! 🌿 Welcome to Rayeva — your one-stop destination for sustainable living. I can help you with:\n\n📦 Track your order — just share your order ID\n🔄 Returns & exchanges — hassle-free 15-day policy\n🛒 Product recommendations — personalized for you\n💬 Any other questions!\n\nHow can I assist you today?",
+    intent: "general_query",
+    escalate: false,
+    escalation_reason: null,
+    order_id_referenced: null,
   };
 }
 

@@ -179,11 +179,47 @@ OUTPUT FORMAT:
 }
 `;
 
+/**
+ * Build user prompt for impact report generation.
+ * @param {string} orderId
+ * @param {Array} products - Array of {name, quantity, price, category}
+ * @param {number} orderTotal
+ * @returns {string}
+ */
+function buildImpactUserPrompt(orderId, products, orderTotal) {
+  const productList = products
+    .map((p) => `- ${p.name} (qty: ${p.quantity}, ₹${p.price}, category: ${p.category})`)
+    .join("\n");
+  return `Analyze the environmental impact of this order:
+
+ORDER ID: ${orderId}
+ITEMS: ${products.length}
+ORDER TOTAL: ₹${orderTotal}
+PRODUCTS:
+${productList}
+
+Calculate plastic saved, carbon avoided, local sourcing impact, and generate a customer-facing impact statement.`;
+}
+
+/**
+ * Build user prompt for WhatsApp bot response.
+ * @param {string} userMessage
+ * @param {string|null} sessionId
+ * @returns {string}
+ */
+function buildChatUserPrompt(userMessage, sessionId = null) {
+  return `CUSTOMER MESSAGE: ${userMessage}${sessionId ? `\nSESSION: ${sessionId}` : ""}
+
+Respond helpfully following the rules. Detect intent and decide if escalation is needed.`;
+}
+
 module.exports = {
   CATEGORY_TAGGER_SYSTEM,
   buildCategoryUserPrompt,
   B2B_PROPOSAL_SYSTEM,
   buildProposalUserPrompt,
   IMPACT_REPORT_SYSTEM,
+  buildImpactUserPrompt,
   WHATSAPP_BOT_SYSTEM,
+  buildChatUserPrompt,
 };

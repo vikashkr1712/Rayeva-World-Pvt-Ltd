@@ -51,7 +51,56 @@ const proposalInputSchema = Joi.object({
     .optional(),
 });
 
+// ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+// Module 3 – Impact Report Generator
+// ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+const impactInputSchema = Joi.object({
+  order_id: Joi.string().min(1).max(100).required().messages({
+    "string.min": "Order ID is required",
+    "any.required": "Order ID is required",
+  }),
+  products: Joi.array()
+    .items(
+      Joi.object({
+        name: Joi.string().required(),
+        quantity: Joi.number().integer().min(1).required(),
+        price: Joi.number().min(0).required(),
+        category: Joi.string().required(),
+      })
+    )
+    .min(1)
+    .required()
+    .messages({
+      "array.min": "At least one product is required",
+      "any.required": "Products array is required",
+    }),
+  order_total: Joi.number().greater(0).required().messages({
+    "number.greater": "Order total must be greater than 0",
+    "any.required": "Order total is required",
+  }),
+});
+
+// ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+// Module 4 – WhatsApp Support Bot
+// ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+const chatInputSchema = Joi.object({
+  message: Joi.string().min(1).max(2000).required().messages({
+    "string.min": "Message cannot be empty",
+    "string.max": "Message must be at most 2000 characters",
+    "any.required": "Message is required",
+  }),
+  session_id: Joi.string().min(1).max(100).required().messages({
+    "string.min": "Session ID is required",
+    "any.required": "Session ID is required",
+  }),
+  user_phone: Joi.string().max(20).allow(null, "").optional(),
+});
+
 module.exports = {
   productInputSchema,
   proposalInputSchema,
+  impactInputSchema,
+  chatInputSchema,
 };
